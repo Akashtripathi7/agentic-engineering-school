@@ -1,0 +1,13 @@
+{
+  "name": "agentic-engineering-school-tests",
+  "private": true,
+  "description": "Browser tests and a site-wide audit for the course",
+  "scripts": {
+    "test": "node run.js",
+    "analyze": "node analyze.js"
+  },
+  "devDependencies": {
+    "axe-core": "^4.10.0",
+    "playwright": "^1.50.0"
+  }
+}
