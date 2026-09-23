@@ -34,6 +34,18 @@ function check(name, pass, detail) {
   check('Every home link points at a real page',
         homeDead.every(d => pageIds.includes(d)), homeDead.filter(d => !pageIds.includes(d)).join(','));
 
+  // in-page scroll button on the home page
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.click('#page-home a[data-scroll="curriculum"]');
+  await page.waitForTimeout(700);
+  const scrolled = await page.evaluate(() => {
+    const t = document.getElementById('curriculum');
+    return { y: window.scrollY, top: Math.round(t.getBoundingClientRect().top) };
+  });
+  check('"See every lesson" scrolls to the curriculum', scrolled.y > 400 && Math.abs(scrolled.top) < 120, JSON.stringify(scrolled));
+  const stillHome = await page.$$eval('.page:not([hidden])', e => e.map(x => x.id));
+  check('…without leaving the home page', stillHome[0] === 'page-home', stillHome.join(','));
+
   // --- 2. sidebar built from pages ---
   const navLinks = await page.$$eval('.rail .nav a', as => as.length);
   const navGroups = await page.$$eval('.rail .nav .grp', gs => gs.map(g => g.textContent));
